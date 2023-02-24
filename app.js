@@ -141,10 +141,6 @@ app.get('/auth', checkCookie, (req, res) => {
 const host = '0.0.0.0';
 const port = process.env.PORT || 3000;
 
-app.listen({
-  host,
-  port,
-  exclusive: true
-},() => {
+app.listen('0.0.0.0:$PORT',() => {
   console.log(`Server Started at http://${host}:${port}`)
 });
