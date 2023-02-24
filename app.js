@@ -3,11 +3,14 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+
+app.use(cors());
 
 const users = [
   {
@@ -80,6 +83,8 @@ app.post('/login', (req, res) => {
     const token = jwt.sign({ id: user.id }, secret, { expiresIn: '1h' });
     res.cookie('MENTAL_COOKIE', token, { httpOnly: true, maxAge: 3600000 }); // 1HR
     res.status(200).json({message: 'Login Successful'});
+  } else {
+    res.status(403).json({message: 'Either Username or Password is Incorrect'});
   }
 
 });
@@ -106,6 +111,10 @@ app.post('/logout', (req, res) => {
   res.clearCookie('MENTAL_COOKIE');
   res.status(200).json({message: 'User logged out'});
 });
+
+
+
+
 
 app.get('/dashboard', checkCookie,  (req, res) => {
   if (req.auth === 'false') {
