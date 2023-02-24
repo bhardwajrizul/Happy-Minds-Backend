@@ -16,16 +16,19 @@ const users = [
   {
     id: 1,
     username: 'user1',
-    password: 'password' // password
+    password: 'password', // password
+    streak: 0
   },
   {
     id: 2,
     username: 'user2',
-    password: '$2b$10$fAyudm/n8W2JzrKjL1bYJ.t0oM/lQ4s4d.3KtB.l3qB9z0Tbo1S/S'
+    password: 'password',
+    streak: 0
   }
 ];
 
 const secret = 'secret_key'; 
+
 
 
 const checkCookie = (req, res, next) => {
@@ -53,7 +56,6 @@ const checkCookie = (req, res, next) => {
     next();
   });
 };
-
 
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
@@ -112,7 +114,13 @@ app.post('/logout', (req, res) => {
   res.status(200).json({message: 'User logged out'});
 });
 
-
+app.post('/incStreak', checkCookie, (req,res)=>{
+  if (req.auth == "true") {
+    const user = users.find((u) => u.id === req.user.id);
+    user.streak++;
+    res.status(200).json({message: `${user.streak}`})
+  }
+})
 
 
 
@@ -120,6 +128,7 @@ app.get('/dashboard', checkCookie,  (req, res) => {
   if (req.auth === 'false') {
     res.redirect('/auth');
   } else {
+    
     res.sendFile(__dirname + '/public/dashboard.html', (err) => {
       console.log(err)
     })
@@ -141,7 +150,7 @@ app.get('/auth', checkCookie, (req, res) => {
 const host = '0.0.0.0';
 const port = process.env.PORT || 3000;
 
-app.listen('0.0.0.0:$PORT',() => {
+app.listen('3000',() => {
   console.log(`Server Started at http://${host}:${port}`)
 });
 
