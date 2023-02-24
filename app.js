@@ -57,6 +57,14 @@ const checkCookie = (req, res, next) => {
   });
 };
 
+const incStreak = (req, res, next) => {
+  if (req.auth == "true") {
+    const user = users.find((u) => u.id === req.user.id);
+    user.streak++;
+    res.status(200).json({message: `${user}`})
+  }
+}
+
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
   const user = users.find((u) => u.username === email);
@@ -114,6 +122,7 @@ app.post('/logout', (req, res) => {
   res.status(200).json({message: 'User logged out'});
 });
 
+
 app.post('/incStreak', checkCookie, (req,res)=>{
   if (req.auth == "true") {
     const user = users.find((u) => u.id === req.user.id);
@@ -121,7 +130,6 @@ app.post('/incStreak', checkCookie, (req,res)=>{
     res.status(200).json({message: `${user.streak}`})
   }
 })
-
 
 
 app.get('/dashboard', checkCookie,  (req, res) => {
@@ -150,7 +158,7 @@ app.get('/auth', checkCookie, (req, res) => {
 const host = '0.0.0.0';
 const port = process.env.PORT || 3000;
 
-app.listen('3000',() => {
+app.listen(port,() => {
   console.log(`Server Started at http://${host}:${port}`)
 });
 
